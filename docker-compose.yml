@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  saminta-api:
+    container_name: saminta-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    depends_on:
+      # - mongodb-primary
+      - redis
+    env_file:
+      - .env
+
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    expose:
+      - '6379'
+    ports:
+      - 16379:6379
+    volumes:
+      - redis:/data
+
+  # mongodb-primary:
+  #   image: mongo:latest
+  #   restart: always
+  #   expose:
+  #     - '27017'
+  #   ports:
+  #     - '27017:27017'
+  #   env_file:
+  #     - .env
+  #   command: mongod --replSet rs0
+  #   volumes:
+  #     - mongodb_data_primary:/data/db
+
+  # mongodb-secondary:
+  #   image: mongo:latest
+  #   restart: always
+  #   expose:
+  #     - '27018'
+  #   ports:
+  #     - '27018:27018'
+  #   env_file:
+  #     - .env
+  #   command: mongod --replSet rs0
+  #   depends_on:
+  #     - mongodb-primary
+  #   volumes:
+  #     - mongodb_data_secondary:/data/db
+volumes:
+  # mongodb_data_primary:
+  # mongodb_data_secondary:
+  redis:
+    driver: local
